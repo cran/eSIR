@@ -123,7 +123,7 @@ alpha0 <- c(0.2) # 20\% of the susceptible population were found immunized
 res.antibody <- eSAIR(Y, R,
   begin_str = "01/13/2020", death_in_R = 0.4,
   alpha0 = alpha0, change_time = change_time,
-  casename = "Hubei_antibody", save_files = T, save_mcmc = F,
+  casename = "Hubei_antibody", save_files = TRUE, save_mcmc = FALSE,
   M = 5e2, nburnin = 2e2
 )
 res.antibody$plot_infection

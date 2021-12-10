@@ -110,8 +110,7 @@ users may follow steps at
 library(eSIR) 
 ```
 
-Our data are collected daily from
-[dxy.com](https://mama.dxy.com/outbreak/daily-of-nationwide-new?index=20200206&locationIds=999&from=todh5).
+Our data are collected daily from dxy dot com.
 Alternatively, we notice some convenient access to COVID-19 data from
 [GuangchuangYu/nCov2019](https://github.com/GuangchuangYu/nCov2019).
 

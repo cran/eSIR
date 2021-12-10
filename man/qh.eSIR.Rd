@@ -127,7 +127,7 @@ phi0 <- c(0.1, 0.4, 0.4)
 res.q <- qh.eSIR(Y, R,
   begin_str = "01/13/2020", death_in_R = 0.4,
   phi0 = phi0, change_time = change_time,
-  casename = "Hubei_q", save_files = T, save_mcmc = F,
+  casename = "Hubei_q", save_files = TRUE, save_mcmc = FALSE,
   M = 5e2, nburnin = 2e2
 )
 res.q$plot_infection

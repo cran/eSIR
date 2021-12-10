@@ -75,9 +75,9 @@
 #' pi0 <- c(1.0, 0.9, 0.5, 0.1)
 #' res.step <- tvt.eSIR(Y, R,
 #'   begin_str = "01/13/2020", death_in_R = 0.4,
-#'   T_fin = 200, pi0 = pi0, change_time = change_time, dic = T,
-#'   casename = "Hubei_step", save_files = T,
-#'   save_mcmc = F, M = 5e2, nburnin = 2e2
+#'   T_fin = 200, pi0 = pi0, change_time = change_time, dic = TRUE,
+#'   casename = "Hubei_step", save_files = TRUE,
+#'   save_mcmc = FALSE, M = 5e2, nburnin = 2e2
 #' )
 #' res.step$plot_infection
 #' res.step$plot_removed
@@ -86,8 +86,8 @@
 #' ### continuous exponential function of pi(t)
 #' res.exp <- tvt.eSIR(Y, R,
 #'   begin_str = "01/13/2020", death_in_R = 0.4,
-#'   T_fin = 200, exponential = TRUE, dic = F, lambda0 = 0.05,
-#'   casename = "Hubei_exp", save_files = F, save_mcmc = F,
+#'   T_fin = 200, exponential = TRUE, dic = FALSE, lambda0 = 0.05,
+#'   casename = "Hubei_exp", save_files = FALSE, save_mcmc = FALSE,
 #'   M = 5e2, nburnin = 2e2
 #' )
 #' res.exp$plot_infection
@@ -96,7 +96,7 @@
 #' ### without pi(t), the standard state-space SIR model without intervention
 #' res.nopi <- tvt.eSIR(Y, R,
 #'   begin_str = "01/13/2020", death_in_R = 0.4,
-#'   T_fin = 200, casename = "Hubei_nopi", save_files = F,
+#'   T_fin = 200, casename = "Hubei_nopi", save_files = FALSE,
 #'   M = 5e2, nburnin = 2e2
 #' )
 #' res.nopi$plot_infection
@@ -445,7 +445,7 @@ tvt.eSIR <- function(Y,
             na.rm = TRUE
     ))
   )
-  Y_mean <- c(colMeans(Y_pp, na.rm = T))
+  Y_mean <- c(colMeans(Y_pp, na.rm = TRUE))
   thetaI_mean <- c(
     colMeans(theta_p[, -1, 2], na.rm = TRUE),
     colMeans(theta_pp[, , 2], na.rm = TRUE)
@@ -547,7 +547,7 @@ tvt.eSIR <- function(Y,
       na.rm = TRUE
     )
     Y_tp1_vec <- NA
-    Y_tp1_mean <- mean(Y_tp1_vec, na.rm = T)
+    Y_tp1_mean <- mean(Y_tp1_vec, na.rm = TRUE)
     Y_tp1_ci <- quantile(
       Y_tp1_vec,
       c(0.025, 0.5, 0.975),
@@ -1004,11 +1004,11 @@ tvt.eSIR <- function(Y,
   if (save_files) ggsave(paste0(file_add, casename, "_forecast.png"), width = 12, height = 10)
 
   ### Removed
-  R_band <- data.frame(t(apply(R_pp, 2, quantile, probs = c(0.025, 0.975), na.rm = T)))
-  thetaR_band <- data.frame(t(apply(theta_p[, -1, 3], 2, quantile, probs = c(0.025, 0.975), na.rm = T)))
-  R_mean <- c(colMeans(R_pp, na.rm = T))
-  thetaR_mean <- c(colMeans(theta_p[, -1, 3], na.rm = T), colMeans(theta_pp[, , 3], na.rm = T))
-  thetaR_med <- c(apply(theta_p[, -1, 3], 2, median, na.rm = T), apply(theta_pp[, , 3], 2, median, na.rm = T))
+  R_band <- data.frame(t(apply(R_pp, 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE)))
+  thetaR_band <- data.frame(t(apply(theta_p[, -1, 3], 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE)))
+  R_mean <- c(colMeans(R_pp, na.rm = TRUE))
+  thetaR_mean <- c(colMeans(theta_p[, -1, 3], na.rm = TRUE), colMeans(theta_pp[, , 3], na.rm = TRUE))
+  thetaR_med <- c(apply(theta_p[, -1, 3], 2, median, na.rm = TRUE), apply(theta_pp[, , 3], 2, median, na.rm = TRUE))
   colnames(R_band) <- c("lower", "upper")
   colnames(thetaR_band) <- c("lower", "upper")
   data_pre_R <- data.frame(time = 1:T_prime, R) # previous data
@@ -1019,7 +1019,7 @@ tvt.eSIR <- function(Y,
 
   data_poly_R <- data.frame(y = c(thetaR_band$upper, rev(thetaR_band$lower), R_band$upper, rev(R_band$lower)), x = c(1:T_prime, T_prime:1, (T_prime + 1):T_fin, T_fin:(T_prime + 1)), phase = c(rep("pre", T_prime * 2), rep("post", (T_fin - T_prime) * 2)), value = c(rep(col2[1], T_prime * 2), rep(col2[2], (T_fin - T_prime) * 2)))
 
-  r_text_ht <- max(rbind(thetaR_band, R_band), na.rm = T) / 2
+  r_text_ht <- max(rbind(thetaR_band, R_band), na.rm = TRUE) / 2
   plot2 <- ggplot(data = data_poly_R, aes(x = x, y = y)) +
     geom_polygon(alpha = 0.5, aes(fill = value, group = phase)) +
     labs(
@@ -1254,7 +1254,7 @@ if (FALSE) {
   pi0 <- c(1.0, 0.9, 0.5, 0.1)
   res.step <- tvt.eSIR(Y, R,
                        begin_str = "01/13/2020", death_in_R = 0.4, T_fin = 200,
-                       pi0 = pi0, change_time = change_time, dic = F, casename = "Hubei_step", save_files = F, save_mcmc = F,
+                       pi0 = pi0, change_time = change_time, dic = FALSE, casename = "Hubei_step", save_files = FALSE, save_mcmc = FALSE,
                        M = 5e2, nburnin = 2e2
   )
   res.step$plot_infection
@@ -1263,8 +1263,8 @@ if (FALSE) {
   res.step$gelman_diag_list
   ### continuous exponential function of pi(t)
   res.exp <- tvt.eSIR(Y, R,
-                      begin_str = "01/13/2020", death_in_R = 0.4, T_fin = 200, exponential = TRUE, dic = F, lambda0 = 0.05,
-                      casename = "Hubei_exp", save_files = T, save_mcmc = F,
+                      begin_str = "01/13/2020", death_in_R = 0.4, T_fin = 200, exponential = TRUE, dic = FALSE, lambda0 = 0.05,
+                      casename = "Hubei_exp", save_files = TRUE, save_mcmc = FALSE,
                       M = 5e2, nburnin = 2e2
   )
   res.exp$plot_infection
@@ -1273,7 +1273,7 @@ if (FALSE) {
   ### without pi(t), the standard state-space SIR model without intervention
   res.nopi <- tvt.eSIR(Y, R,
                        begin_str = "01/13/2020", death_in_R = 0.4, T_fin = 200,
-                       casename = "Hubei_nopi", save_files = F,
+                       casename = "Hubei_nopi", save_files = FALSE,
                        M = 5e2, nburnin = 2e2
   )
   res.nopi$plot_infection

@@ -72,7 +72,7 @@
 #' res.antibody <- eSAIR(Y, R,
 #'   begin_str = "01/13/2020", death_in_R = 0.4,
 #'   alpha0 = alpha0, change_time = change_time,
-#'   casename = "Hubei_antibody", save_files = T, save_mcmc = F,
+#'   casename = "Hubei_antibody", save_files = TRUE, save_mcmc = FALSE,
 #'   M = 5e2, nburnin = 2e2
 #' )
 #' res.antibody$plot_infection
@@ -118,7 +118,7 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
   }
   Y <- pmax(Y, eps)
   R <- pmax(R, eps)
-  if (add_death == T && death_in_R == 0.02) {
+  if (add_death == TRUE && death_in_R == 0.02) {
     message("use the default death_in_R which is equal to 0.02 to plot the death curve in the removed process forecast plot")
   }
   begin <- chron(dates. = begin_str)
@@ -378,11 +378,11 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
   }
   par(mfrow = c(1, 1))
   col2 <- gg_color_hue(2)
-  Y_band <- data.frame(t(apply(Y_pp, 2, quantile, probs = c(0.025, 0.975), na.rm = T)))
-  thetaI_band <- data.frame(t(apply(theta_p[, -1, 2], 2, quantile, probs = c(0.025, 0.975), na.rm = T)))
-  Y_mean <- c(colMeans(Y_pp, na.rm = T))
-  thetaI_mean <- c(colMeans(theta_p[, -1, 2], na.rm = T), colMeans(theta_pp[, , 2], na.rm = T))
-  thetaI_median <- c(apply(theta_p[, -1, 2], 2, median, na.rm = T), apply(theta_pp[, , 2], 2, median, na.rm = T))
+  Y_band <- data.frame(t(apply(Y_pp, 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE)))
+  thetaI_band <- data.frame(t(apply(theta_p[, -1, 2], 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE)))
+  Y_mean <- c(colMeans(Y_pp, na.rm = TRUE))
+  thetaI_mean <- c(colMeans(theta_p[, -1, 2], na.rm = TRUE), colMeans(theta_pp[, , 2], na.rm = TRUE))
+  thetaI_median <- c(apply(theta_p[, -1, 2], 2, median, na.rm = TRUE), apply(theta_pp[, , 2], 2, median, na.rm = TRUE))
   colnames(Y_band) <- c("lower", "upper")
   colnames(thetaI_band) <- c("lower", "upper")
   data_pre <- data.frame(time = 1:T_prime, Y)
@@ -404,91 +404,91 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
   }))
   dthetaI_mat <- cbind(dthetaI_mat_pre, dthetaI_mat_post)
 
-  dthetaI <- colMeans(dthetaI_mat, na.rm = T)
+  dthetaI <- colMeans(dthetaI_mat, na.rm = TRUE)
   dthetaI_tp1 <- (1:T_fin)[which.max(dthetaI)] # first second order derivative=0
   dthetaI_tp2 <- (dthetaI_tp1:T_fin)[which.min(dthetaI[dthetaI_tp1:T_fin] > 0)] # first order derivative=0
 
   dthetaI_tp1_rd <- max(round(dthetaI_tp1), 1)
   if (dthetaI_tp1_rd > T_prime) {
     thetatI_tp1_vec <- thetaI_mat[, dthetaI_tp1_rd]
-    thetaI_tp1_mean <- mean(thetatI_tp1_vec, na.rm = T)
-    thetaI_tp1_ci <- quantile(thetatI_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaI_tp1_mean <- mean(thetatI_tp1_vec, na.rm = TRUE)
+    thetaI_tp1_ci <- quantile(thetatI_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     Y_tp1_vec <- Y_pp[, dthetaI_tp1_rd - T_prime]
-    Y_tp1_mean <- mean(Y_tp1_vec, na.rm = T)
-    Y_tp1_ci <- quantile(Y_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    Y_tp1_mean <- mean(Y_tp1_vec, na.rm = TRUE)
+    Y_tp1_ci <- quantile(Y_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
     thetatR_tp1_vec <- thetaR_mat[, dthetaI_tp1_rd]
-    thetaR_tp1_mean <- mean(thetatR_tp1_vec, na.rm = T)
-    thetaR_tp1_ci <- quantile(thetatR_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaR_tp1_mean <- mean(thetatR_tp1_vec, na.rm = TRUE)
+    thetaR_tp1_ci <- quantile(thetatR_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     R_tp1_vec <- R_pp[, dthetaI_tp1_rd - T_prime]
-    R_tp1_mean <- mean(R_tp1_vec, na.rm = T)
-    R_tp1_ci <- quantile(R_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    R_tp1_mean <- mean(R_tp1_vec, na.rm = TRUE)
+    R_tp1_ci <- quantile(R_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
   } else {
     thetatI_tp1_vec <- thetaI_mat[, dthetaI_tp1_rd]
-    thetaI_tp1_mean <- mean(thetatI_tp1_vec, na.rm = T)
-    thetaI_tp1_ci <- quantile(thetatI_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaI_tp1_mean <- mean(thetatI_tp1_vec, na.rm = TRUE)
+    thetaI_tp1_ci <- quantile(thetatI_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     Y_tp1_vec <- NA
-    Y_tp1_mean <- mean(Y_tp1_vec, na.rm = T)
-    Y_tp1_ci <- quantile(Y_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    Y_tp1_mean <- mean(Y_tp1_vec, na.rm = TRUE)
+    Y_tp1_ci <- quantile(Y_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
     thetatR_tp1_vec <- thetaR_mat[, dthetaI_tp1_rd]
-    thetaR_tp1_mean <- mean(thetatR_tp1_vec, na.rm = T)
-    thetaR_tp1_ci <- quantile(thetatR_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaR_tp1_mean <- mean(thetatR_tp1_vec, na.rm = TRUE)
+    thetaR_tp1_ci <- quantile(thetatR_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     R_tp1_vec <- R_pp[, dthetaI_tp1_rd - T_prime]
-    R_tp1_mean <- mean(R_tp1_vec, na.rm = T)
-    R_tp1_ci <- quantile(R_tp1_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    R_tp1_mean <- mean(R_tp1_vec, na.rm = TRUE)
+    R_tp1_ci <- quantile(R_tp1_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
   }
   dthetaI_tp2_rd <- max(round(dthetaI_tp2), 1)
   if (dthetaI_tp1_rd == dthetaI_tp2_rd) {
     thetatI_tp2_vec <- NA
-    thetaI_tp2_mean <- mean(thetatI_tp2_vec, na.rm = T)
-    thetaI_tp2_ci <- quantile(thetatI_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaI_tp2_mean <- mean(thetatI_tp2_vec, na.rm = TRUE)
+    thetaI_tp2_ci <- quantile(thetatI_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     Y_tp2_vec <- NA
-    Y_tp2_mean <- mean(Y_tp2_vec, na.rm = T)
-    Y_tp2_ci <- quantile(Y_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    Y_tp2_mean <- mean(Y_tp2_vec, na.rm = TRUE)
+    Y_tp2_ci <- quantile(Y_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
     thetatR_tp2_vec <- NA
-    thetaR_tp2_mean <- mean(thetatR_tp2_vec, na.rm = T)
-    thetaR_tp2_ci <- quantile(thetatR_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaR_tp2_mean <- mean(thetatR_tp2_vec, na.rm = TRUE)
+    thetaR_tp2_ci <- quantile(thetatR_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     R_tp2_vec <- NA
-    R_tp2_mean <- mean(R_tp2_vec, na.rm = T)
-    R_tp2_ci <- quantile(R_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    R_tp2_mean <- mean(R_tp2_vec, na.rm = TRUE)
+    R_tp2_ci <- quantile(R_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
   } else if (dthetaI_tp2_rd > T_prime) {
     thetatI_tp2_vec <- thetaI_mat[, dthetaI_tp2_rd]
-    thetaI_tp2_mean <- mean(thetatI_tp2_vec, na.rm = T)
-    thetaI_tp2_ci <- quantile(thetatI_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaI_tp2_mean <- mean(thetatI_tp2_vec, na.rm = TRUE)
+    thetaI_tp2_ci <- quantile(thetatI_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     Y_tp2_vec <- Y_pp[, dthetaI_tp2_rd - T_prime]
-    Y_tp2_mean <- mean(Y_tp2_vec, na.rm = T)
-    Y_tp2_ci <- quantile(Y_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    Y_tp2_mean <- mean(Y_tp2_vec, na.rm = TRUE)
+    Y_tp2_ci <- quantile(Y_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
     thetatR_tp2_vec <- thetaR_mat[, dthetaI_tp2_rd]
-    thetaR_tp2_mean <- mean(thetatR_tp2_vec, na.rm = T)
-    thetaR_tp2_ci <- quantile(thetatR_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaR_tp2_mean <- mean(thetatR_tp2_vec, na.rm = TRUE)
+    thetaR_tp2_ci <- quantile(thetatR_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     R_tp2_vec <- R_pp[, dthetaI_tp2_rd - T_prime]
-    R_tp2_mean <- mean(R_tp2_vec, na.rm = T)
-    R_tp2_ci <- quantile(R_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    R_tp2_mean <- mean(R_tp2_vec, na.rm = TRUE)
+    R_tp2_ci <- quantile(R_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
   } else {
     thetatI_tp2_vec <- thetaI_mat[, dthetaI_tp2_rd]
-    thetaI_tp2_mean <- mean(thetatI_tp2_vec, na.rm = T)
-    thetaI_tp2_ci <- quantile(thetatI_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaI_tp2_mean <- mean(thetatI_tp2_vec, na.rm = TRUE)
+    thetaI_tp2_ci <- quantile(thetatI_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     Y_tp2_vec <- NA
-    Y_tp2_mean <- mean(Y_tp2_vec, na.rm = T)
-    Y_tp2_ci <- quantile(Y_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    Y_tp2_mean <- mean(Y_tp2_vec, na.rm = TRUE)
+    Y_tp2_ci <- quantile(Y_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
     thetatR_tp2_vec <- thetaR_mat[, dthetaI_tp2_rd]
-    thetaR_tp2_mean <- mean(thetatR_tp2_vec, na.rm = T)
-    thetaR_tp2_ci <- quantile(thetatR_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    thetaR_tp2_mean <- mean(thetatR_tp2_vec, na.rm = TRUE)
+    thetaR_tp2_ci <- quantile(thetatR_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
     R_tp2_vec <- NA
-    R_tp2_mean <- mean(R_tp2_vec, na.rm = T)
-    R_tp2_ci <- quantile(R_tp2_vec, c(0.025, 0.5, 0.975), na.rm = T)
+    R_tp2_mean <- mean(R_tp2_vec, na.rm = TRUE)
+    R_tp2_ci <- quantile(R_tp2_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
   }
   thetaR_max_vec <- thetaR_mat[, T_fin]
   thetaR_max_mean <- mean(thetaR_max_vec)
-  thetaR_max_ci <- quantile(thetaR_max_vec, c(0.025, 0.5, 0.975), na.rm = T)
+  thetaR_max_ci <- quantile(thetaR_max_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
   cumInf_vec <- thetaR_mat[, T_fin] + thetaI_mat[, T_fin]
   cumInf_mean <- mean(cumInf_vec)
-  cumInf_ci <- quantile(cumInf_vec, c(0.025, 0.5, 0.975), na.rm = T)
+  cumInf_ci <- quantile(cumInf_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
 
 
@@ -496,9 +496,9 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
   dthetaI_tp2_date <- chron_ls[dthetaI_tp2]
 
   incidence_vec <- thetaI_mat[, T_fin] + thetaR_mat[, T_fin]
-  incidence_mean <- mean(incidence_vec, na.rm = T)
+  incidence_mean <- mean(incidence_vec, na.rm = TRUE)
 
-  incidence_ci <- quantile(incidence_vec, c(0.025, 0.5, 0.975), na.rm = T)
+  incidence_ci <- quantile(incidence_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
   first_tp_vec <- (1:T_fin)[apply(dthetaI_mat, 1, which.max)] # first second order derivative=0
 
@@ -516,13 +516,13 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
 
 
   # first order derivative=0
-  first_tp_mean <- mean(first_tp_vec, na.rm = T)
-  second_tp_mean <- mean(second_tp_vec, na.rm = T)
-  end_p_mean <- mean(end_p_vec, na.rm = T)
+  first_tp_mean <- mean(first_tp_vec, na.rm = TRUE)
+  second_tp_mean <- mean(second_tp_vec, na.rm = TRUE)
+  end_p_mean <- mean(end_p_vec, na.rm = TRUE)
 
-  first_tp_ci <- quantile(first_tp_vec, c(0.025, 0.5, 0.975), na.rm = T)
-  second_tp_ci <- quantile(second_tp_vec, c(0.025, 0.5, 0.975), na.rm = T)
-  end_p_ci <- quantile(end_p_vec, c(0.025, 0.5, 0.975), na.rm = T)
+  first_tp_ci <- quantile(first_tp_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
+  second_tp_ci <- quantile(second_tp_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
+  end_p_ci <- quantile(end_p_vec, c(0.025, 0.5, 0.975), na.rm = TRUE)
 
   first_tp_date_mean <- chron_ls[first_tp_mean]
   second_tp_date_mean <- chron_ls[second_tp_mean]
@@ -554,7 +554,7 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
   }
 
   ## Prepare the Spaghetti plot
-  sample_dthetaI_mat <- cbind(dthetaI_mat[sample.int(len, 20, replace = F), ])
+  sample_dthetaI_mat <- cbind(dthetaI_mat[sample.int(len, 20, replace = FALSE), ])
   colnames(sample_dthetaI_mat) <- c(as.character(chron_ls)[-1])
   sample_dthetaI_mat_long <- reshape2::melt(sample_dthetaI_mat)
   colnames(sample_dthetaI_mat_long) <- c("id", "date", "dthetaI")
@@ -597,7 +597,7 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
 
   if (save_files) ggsave(paste0(file_add, casename, "_spaghetti.png"), width = 12, height = 10)
   ##############
-  y_text_ht <- max(rbind(thetaI_band, Y_band), na.rm = T) / 2
+  y_text_ht <- max(rbind(thetaI_band, Y_band), na.rm = TRUE) / 2
   plot1 <- ggplot(data = data_poly, aes(x = x, y = y)) +
     geom_polygon(alpha = 0.5, aes(fill = value, group = phase)) +
     labs(title = substitute(paste(casename, ": infection forecast with prior ", beta[0], "=", v1, ",", gamma[0], "=", v2, " and ", R[0], "=", v3), list(casename = casename, v1 = format(beta0, digits = 3), v2 = format(gamma0, digits = 3), v3 = format(R0, digits = 3))), subtitle = substitute(paste("Posterior ", beta[p], "=", v1, ",", gamma[p], "=", v2, " and ", R[0], "=", v3), list(v1 = format(beta_p_mean, digits = 3), v2 = format(gamma_p_mean, digits = 3), v3 = format(R0_p_mean, digits = 3))), x = "time", y = "P(Infected)") +
@@ -637,11 +637,11 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
   if (save_files) ggsave(paste0(file_add, casename, "_forecast.png"), width = 12, height = 10)
 
   ### Removed
-  R_band <- data.frame(t(apply(R_pp, 2, quantile, probs = c(0.025, 0.975), na.rm = T)))
-  thetaR_band <- data.frame(t(apply(theta_p[, -1, 3], 2, quantile, probs = c(0.025, 0.975), na.rm = T)))
-  R_mean <- c(colMeans(R_pp, na.rm = T))
-  thetaR_mean <- c(colMeans(theta_p[, -1, 3], na.rm = T), colMeans(theta_pp[, , 3], na.rm = T))
-  thetaR_med <- c(apply(theta_p[, -1, 3], 2, median, na.rm = T), apply(theta_pp[, , 3], 2, median, na.rm = T))
+  R_band <- data.frame(t(apply(R_pp, 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE)))
+  thetaR_band <- data.frame(t(apply(theta_p[, -1, 3], 2, quantile, probs = c(0.025, 0.975), na.rm = TRUE)))
+  R_mean <- c(colMeans(R_pp, na.rm = TRUE))
+  thetaR_mean <- c(colMeans(theta_p[, -1, 3], na.rm = TRUE), colMeans(theta_pp[, , 3], na.rm = TRUE))
+  thetaR_med <- c(apply(theta_p[, -1, 3], 2, median, na.rm = TRUE), apply(theta_pp[, , 3], 2, median, na.rm = TRUE))
   colnames(R_band) <- c("lower", "upper")
   colnames(thetaR_band) <- c("lower", "upper")
   data_pre_R <- data.frame(time = 1:T_prime, R) # previous data
@@ -652,7 +652,7 @@ eSAIR <- function(Y, R, alpha0 = NULL, change_time = NULL, begin_str = "01/13/20
 
   data_poly_R <- data.frame(y = c(thetaR_band$upper, rev(thetaR_band$lower), R_band$upper, rev(R_band$lower)), x = c(1:T_prime, T_prime:1, (T_prime + 1):T_fin, T_fin:(T_prime + 1)), phase = c(rep("pre", T_prime * 2), rep("post", (T_fin - T_prime) * 2)), value = c(rep(col2[1], T_prime * 2), rep(col2[2], (T_fin - T_prime) * 2)))
 
-  r_text_ht <- max(rbind(thetaR_band, R_band), na.rm = T) / 2
+  r_text_ht <- max(rbind(thetaR_band, R_band), na.rm = TRUE) / 2
   plot2 <- ggplot(data = data_poly_R, aes(x = x, y = y)) +
     geom_polygon(alpha = 0.5, aes(fill = value, group = phase)) +
     labs(
@@ -812,7 +812,7 @@ if (FALSE) {
   res.antibody <- eSAIR(Y, R,
                         begin_str = "01/13/2020", death_in_R = 0.4,
                         alpha0 = alpha0, change_time = change_time,
-                        casename = "Hubei_antibody", save_files = F, save_mcmc = F,
+                        casename = "Hubei_antibody", save_files = FALSE, save_mcmc = FALSE,
                         M = 5e2, nburnin = 2e2
   )
   res.antibody$plot_infection

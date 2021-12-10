@@ -131,9 +131,9 @@ change_time <- c("01/23/2020", "02/04/2020", "02/08/2020")
 pi0 <- c(1.0, 0.9, 0.5, 0.1)
 res.step <- tvt.eSIR(Y, R,
   begin_str = "01/13/2020", death_in_R = 0.4,
-  T_fin = 200, pi0 = pi0, change_time = change_time, dic = T,
-  casename = "Hubei_step", save_files = T,
-  save_mcmc = F, M = 5e2, nburnin = 2e2
+  T_fin = 200, pi0 = pi0, change_time = change_time, dic = TRUE,
+  casename = "Hubei_step", save_files = TRUE,
+  save_mcmc = FALSE, M = 5e2, nburnin = 2e2
 )
 res.step$plot_infection
 res.step$plot_removed
@@ -142,8 +142,8 @@ res.step$dic_val
 ### continuous exponential function of pi(t)
 res.exp <- tvt.eSIR(Y, R,
   begin_str = "01/13/2020", death_in_R = 0.4,
-  T_fin = 200, exponential = TRUE, dic = F, lambda0 = 0.05,
-  casename = "Hubei_exp", save_files = F, save_mcmc = F,
+  T_fin = 200, exponential = TRUE, dic = FALSE, lambda0 = 0.05,
+  casename = "Hubei_exp", save_files = FALSE, save_mcmc = FALSE,
   M = 5e2, nburnin = 2e2
 )
 res.exp$plot_infection
@@ -152,7 +152,7 @@ res.exp$plot_infection
 ### without pi(t), the standard state-space SIR model without intervention
 res.nopi <- tvt.eSIR(Y, R,
   begin_str = "01/13/2020", death_in_R = 0.4,
-  T_fin = 200, casename = "Hubei_nopi", save_files = F,
+  T_fin = 200, casename = "Hubei_nopi", save_files = FALSE,
   M = 5e2, nburnin = 2e2
 )
 res.nopi$plot_infection
